@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The Flutter embedding v2 does not require permissions or components
+         in the debug manifest. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>
