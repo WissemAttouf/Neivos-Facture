@@ -350,29 +350,7 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
     );
   }
 
-  String _getFieldLabel(String fieldName) {
-    final labels = {
-      'invoice_number': 'Numéro de facture',
-      'invoice_date': 'Date de facture',
-      'supplier_name': 'Fournisseur',
-      'supplier_address': 'Adresse fournisseur',
-      'supplier_tax_id': 'MF fournisseur',
-      'client_name': 'Client',
-      'client_address': 'Adresse client',
-      'client_tax_id': 'MF client',
-      'total_ht': 'Total HT',
-      'total_ttc': 'Total TTC',
-      'tva_amount': 'Montant TVA',
-      'tva_rate': 'Taux TVA',
-      'net_a_payer': 'Net à payer',
-      'retenue_source': 'Retenue à la source',
-      'timbre_fiscal': 'Timbre fiscal',
-      'matricule_fiscal': 'Matricule fiscal',
-      'payment_terms': 'Conditions de paiement',
-      'due_date': 'Date d\'échéance',
-      'iban': 'IBAN',
-      'address': 'Adresse',
-      'phone': 'Téléphone',
+
       'email': 'Email',
       'currency': 'Devise',
       'confidence': 'Confiance OCR',
@@ -408,16 +386,7 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
     return '$amountStr TND';
   }
 
-  String _formatMontant(dynamic value) {
-    if (value == null || value.toString().isEmpty) return '0.000';
-    try {
-      String strValue = value.toString().replaceAll(',', '.');
-      double amount = double.parse(strValue);
-      return amount.toStringAsFixed(3);
-    } catch (e) {
-      return value.toString();
-    }
-  }
+  
 
   String _formatTaux(dynamic value) {
     if (value == null || value.toString().isEmpty) return '0.0';
@@ -437,29 +406,7 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
       ..value = TextCellValue(value);
   }
 
-  // ✅ EXPORT EXCEL UNIQUE POUR UNE FACTURE
-  Future<void> _exportToExcel(BuildContext context) async {
-    setState(() => _isExporting = true);
-
-    try {
-      final extractedData = widget.document['extractedData'] ?? {};
-
-      var excel = Excel.createExcel();
-      String sheetName = 'Facture';
-      Sheet sheetObject = excel[sheetName];
-
-      int rowIndex = 0;
-
-      // En-tête
-      sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex))
-        ..value = TextCellValue('FACTURE N° ${extractedData['invoice_number'] ?? 'N/A'}')
-        ..cellStyle = CellStyle(bold: true, fontSize: 14);
-      rowIndex++;
-
-      sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex))
-        ..value = TextCellValue('Date: ${extractedData['invoice_date'] ?? 'N/A'}')
-        ..cellStyle = CellStyle(italic: true);
-      rowIndex += 2;
+ 
 
       // Fournisseur
       sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex))
@@ -515,20 +462,6 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
         ..cellStyle = CellStyle(bold: true);
       rowIndex += 2;
 
-      // Métadonnées
-      sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex))
-        ..value = TextCellValue('MÉTADONNÉES')
-        ..cellStyle = CellStyle(bold: true, backgroundColorHex: ExcelColor.fromHexString('#D9E1F2'));
-      rowIndex++;
-
-      _addRow(sheetObject, rowIndex++, 'Confiance OCR:', '${(widget.document['confidence'] ?? 80).toStringAsFixed(1)}%');
-      _addRow(sheetObject, rowIndex++, 'Date d\'extraction:', DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()));
-      _addRow(sheetObject, rowIndex++, 'ID Document:', widget.document['id']?.toString() ?? 'N/A');
-
-      sheetObject.setColumnWidth(0, 25.0);
-      sheetObject.setColumnWidth(1, 40.0);
-
-      var fileBytes = excel.save();
       if (fileBytes == null) throw Exception('Erreur création fichier Excel');
 
       final directory = await getApplicationDocumentsDirectory();
@@ -596,9 +529,7 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
 
   void _editDocument(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Édition du document à venir'),
-        backgroundColor: Theme.of(context).primaryColor,
+    
       ),
     );
   }
