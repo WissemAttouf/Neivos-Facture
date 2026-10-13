@@ -1,10 +1,10 @@
 // lib/config/api_config.dart
 class ApiConfig {
   // Backend principal (Node.js)
-  static const String backendBaseUrl = 'http://37.60.239.139:8086';
+  static const String backendBaseUrl = '*************';
 
   // API OCR externe (NEIVOS)
-  static const String ocrBaseUrl = 'http://37.60.239.139:8775';
+  static const String ocrBaseUrl = '***********';
 
   // Endpoints utiles
   static const String ocrEndpoint = '$ocrBaseUrl/extract-invoices/';
