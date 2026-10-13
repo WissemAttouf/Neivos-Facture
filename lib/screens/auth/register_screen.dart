@@ -14,44 +14,7 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
-  String? _selectedGender;
-  bool _isLoading = false;
-  String _error = '';
-
-  // Variables pour afficher/masquer les mots de passe
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-
-  final List<String> _genders = ['homme', 'femme'];
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    if (_selectedGender == null) {
-      setState(() => _error = 'Veuillez sélectionner votre genre');
-      return;
-    }
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      setState(() => _error = 'Les mots de passe ne correspondent pas');
-      return;
-    }
 
     setState(() {
       _isLoading = true;
@@ -87,28 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return Consumer<ThemeProvider>(
-          builder: (context, themeProvider, child) {
-            return Scaffold(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Theme.of(context).textTheme.bodyLarge?.color),
-                  onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
-                ),
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/ssvg.PNG',
-                      height: 40,
-                      width: 40,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.receipt, size: 30),
-                    ),
-                    const SizedBox(width: 8),
+  
                     Expanded(
                       child: Text(
                         'NEIVOS FACTURE',
@@ -169,17 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             const SizedBox(height: 16),
 
                             // Champ Email
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: _inputDecoration('Email', Icons.email, context),
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) return 'L\'email est requis';
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return 'Entrez un email valide';
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
+                           
 
                             // Sélection du genre
                             DropdownButtonFormField<String>(
@@ -246,14 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                                 ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) return 'Veuillez confirmer votre mot de passe';
-                                if (value != _passwordController.text) return 'Les mots de passe ne correspondent pas';
-                                return null;
-                              },
-                            ),
-
-                            // Affichage de l'erreur
+                             hage de l'erreur
                             if (_error.isNotEmpty) ...[
                               const SizedBox(height: 16),
                               Container(
@@ -281,23 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             const SizedBox(height: 32),
 
                             // Bouton S'inscrire
-                            SizedBox(
-                              width: double.infinity,
-                              height: 48,
-                              child: ElevatedButton(
-                                onPressed: _isLoading ? null : _register,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(context).primaryColor,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(color: Colors.white),
+                           ressIndicator(color: Colors.white),
                                 )
                                     : Text(
                                   'S\'INSCRIRE',
@@ -355,11 +264,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: Theme.of(context).cardColor,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2)),
-      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red)),
-      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red, width: 2)),
-    );
   }
 }
