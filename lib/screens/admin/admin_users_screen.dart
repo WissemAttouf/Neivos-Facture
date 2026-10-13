@@ -27,14 +27,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     _loadUsers();
   }
 
-  Future<void> _loadUsers() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-
-    if (authProvider.authToken != null) {
-      await adminProvider.loadUsers(authProvider.authToken!);
-    }
-  }
+ 
 
   List<UserModel> get _filteredUsers {
     final adminProvider = Provider.of<AdminProvider>(context, listen: false);
@@ -59,15 +52,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     return users;
   }
 
-  // Fonction utilitaire pour obtenir la couleur selon le rôle
-  Color _getRoleColor(String role) {
-    switch (role) {
-      case 'admin': return Colors.red;
-      case 'accountant': return Colors.blue;
-      default: return Colors.green;
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -85,22 +70,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
             const Icon(Icons.lock, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             const Text(
-              'Accès non autorisé',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Vous n\'avez pas les droits administrateur',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
-        ),
-      );
-    }
+            
 
     return Column(
       children: [
@@ -122,25 +92,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 ),
                 onChanged: (value) => setState(() => _searchQuery = value),
               ),
-              const SizedBox(height: 12),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildFilterChip('Tous', _filterRole),
-                    _buildFilterChip('admin', _filterRole),
-                    _buildFilterChip('accountant', _filterRole),
-                    const SizedBox(width: 16),
-                    _buildStatusChip('Tous', _filterStatus),
-                    _buildStatusChip('Actif', _filterStatus),
-                    _buildStatusChip('Inactif', _filterStatus),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-
+             
         // Liste des utilisateurs
         Expanded(
           child: adminProvider.isLoading
@@ -172,26 +124,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     );
   }
 
-  Widget _buildFilterChip(String label, String selected) {
-    final isSelected = _filterRole == label;
-    final displayLabel = label == 'admin' ? 'Admin' : (label == 'accountant' ? 'Comptable' : label);
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(displayLabel),
-        selected: isSelected,
-        onSelected: (selected) {
-          setState(() {
-            _filterRole = selected ? label : 'Tous';
-          });
-        },
-        backgroundColor: Theme.of(context).cardColor,
-        selectedColor: Theme.of(context).primaryColor,
-        labelStyle: TextStyle(
-          color: isSelected ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-        ),
-      ),
-    );
+ 
   }
 
   Widget _buildStatusChip(String label, String selected) {
@@ -244,22 +177,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
             ),
           ),
         ),
-        title: Text(
-          user.username,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              user.email,
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
-            ),
-            const SizedBox(height: 4),
-            Row(
+       
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -291,23 +209,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
             ),
           ],
         ),
-        trailing: PopupMenuButton(
-          icon: Icon(Icons.more_vert, color: Theme.of(context).textTheme.bodyLarge?.color),
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'edit',
-              child: Row(
-                children: [Icon(Icons.edit, size: 20), SizedBox(width: 8), Text('Modifier')],
-              ),
-            ),
-            if (user.id != currentUserId)
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, size: 20, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Supprimer', style: TextStyle(color: Colors.red))
+        ))
                   ],
                 ),
               ),
@@ -340,28 +242,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     );
   }
 
-  void _handleUserAction(dynamic action, UserModel user, String token, BuildContext context) {
-    switch (action) {
-      case 'edit':
-        _editUser(user, token);
-        break;
-      case 'delete':
-        _confirmDeleteUser(user, token);
-        break;
-      case 'toggle':
-        _toggleUserStatus(user, token);
-        break;
-      case 'role':
-        _showRoleDialog(user, token);
-        break;
-    }
-  }
-
-  void _editUser(UserModel user, String token) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AdminUserFormScreen(user: user, token: token),
       ),
     ).then((_) => _loadUsers());
   }
@@ -439,12 +319,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
   void _updateUserRole(UserModel user, String token, String newRole) async {
     final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-    final success = await adminProvider.changeUserRole(token, user.id, newRole);
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(success ? 'Rôle mis à jour' : 'Erreur'),
-          backgroundColor: success ? Colors.green : Colors.red,
+   
         ),
       );
     }
