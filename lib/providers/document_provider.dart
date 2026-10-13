@@ -15,24 +15,13 @@ import '../services/ocr_service.dart';
 
 class DocumentProvider with ChangeNotifier {
   final ApiService _apiService;
-  List<ScannedDocument> _documents = [];
-  bool _isLoading = false;
-  String _error = '';
-  ScannedDocument? _currentDocument;
-  double _processingProgress = 0.0;
-  int? _currentUserId;
+ 
 
   DocumentProvider({required ApiService apiService}) : _apiService = apiService;
 
   // Getters
   List<ScannedDocument> get documents => _documents;
-  bool get isLoading => _isLoading;
-  String get error => _error;
-  ScannedDocument? get currentDocument => _currentDocument;
-  double get processingProgress => _processingProgress;
-  String? get errorMessage => _error.isNotEmpty ? _error : null;
-  bool get isProcessing => _isLoading;
-  int? get userId => _currentUserId;
+  
 
   // ✅ DÉFINIR L'UTILISATEUR COURANT
   void setCurrentUser(int? userId) {
@@ -46,19 +35,6 @@ class DocumentProvider with ChangeNotifier {
   Future<void> loadDocuments({int? userId}) async {
     final targetUserId = userId ?? _currentUserId;
 
-    if (_isLoading) return;
-
-    _isLoading = true;
-    _error = '';
-
-    try {
-      print('📥 Chargement des documents pour user: $targetUserId');
-
-      if (targetUserId == null) {
-        print('⚠️ Aucun utilisateur connecté, chargement local uniquement');
-        await _loadFromLocalStorage();
-        _isLoading = false;
-        notifyListeners();
         return;
       }
 
@@ -76,21 +52,7 @@ class DocumentProvider with ChangeNotifier {
         final List<ScannedDocument> loadedDocs = [];
 
         for (final invoice in invoices) {
-          try {
-            final Map<String, dynamic> invoiceMap;
-            if (invoice is Map) {
-              invoiceMap = Map<String, dynamic>.from(invoice);
-            } else {
-              print('⚠️ Type de document inattendu: ${invoice.runtimeType}');
-              continue;
-            }
-
-            invoiceMap['userId'] = targetUserId;
-            final doc = ScannedDocument.fromMap(invoiceMap);
-            loadedDocs.add(doc);
-          } catch (e) {
-            print('⚠️ Erreur conversion document: $e');
-            continue;
+          
           }
         }
 
@@ -150,19 +112,7 @@ class DocumentProvider with ChangeNotifier {
         'net_a_payer': _parseAmount(document.extractedData['net_a_payer']),
         'retenue_source': _parseAmount(document.extractedData['retenue_source']),
         'timbre_fiscal': _parseAmount(document.extractedData['timbre_fiscal']),
-        'matricule_fiscal': document.extractedData['matricule_fiscal'] ?? '',
-        'client_name': document.extractedData['client_name'] ?? '',
-        'client_address': document.extractedData['client_address'] ?? '',
-        'client_tax_id': document.extractedData['client_tax_id'] ?? '',
-        'supplier_address': document.extractedData['supplier_address'] ?? '',
-        'supplier_tax_id': document.extractedData['supplier_tax_id'] ?? '',
-        'tva_rate': _parseAmount(document.extractedData['tva_rate']),
-        'currency': document.extractedData['currency'] ?? 'TND',
-        'payment_terms': document.extractedData['payment_terms'] ?? '',
-        'due_date': document.extractedData['due_date'] ?? '',
-        'iban': document.extractedData['iban'] ?? '',
-        'phone': document.extractedData['phone'] ?? '',
-        'email': document.extractedData['email'] ?? '',
+        
         'description': document.extractedData['description'] ?? '',
         'raw_text': document.extractedData['raw_text'] ?? '',
         'confidence': document.confidence,
@@ -196,17 +146,7 @@ class DocumentProvider with ChangeNotifier {
         final savedId = saveResult['document_id']?.toString() ?? document.id;
         final savedDocument = document.copyWith(id: savedId);
 
-        _addOrUpdateDocument(savedDocument);
-        await _saveToLocalStorage(savedDocument);
-        _error = '';
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✅ Facture sauvegardée avec succès'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
+       
           );
         }
 
@@ -246,21 +186,7 @@ class DocumentProvider with ChangeNotifier {
   // Fonction pour afficher le pop-up de doublon
   void _showDuplicateDialog(BuildContext context, String message) {
     showDialog(
-      context: context,
-      barrierDismissible: false, // L'utilisateur doit cliquer sur le bouton
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: const [
-              Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
-              SizedBox(width: 10),
-              Text('Document en double'),
-            ],
-          ),
-          content: Text(
-            message,
-            style: const TextStyle(fontSize: 16),
+    le(fontSize: 16),
           ),
           actions: [
             TextButton(
@@ -291,22 +217,7 @@ class DocumentProvider with ChangeNotifier {
       await _saveDocumentsToLocalStorage();
 
       print('✅ Document sauvegardé localement');
-      _error = 'Document sauvegardé localement (mode déconnecté)';
-
-      return true;
-    } catch (e) {
-      print('❌ Erreur sauvegarde locale: $e');
-      _error = 'Échec de la sauvegarde locale: $e';
-      return false;
-    }
-  }
-
-  // ✅ AJOUTER OU METTRE À JOUR UN DOCUMENT
-  void _addOrUpdateDocument(ScannedDocument document) {
-    final existingIndex = _documents.indexWhere((doc) => doc.id == document.id);
-
-    if (existingIndex >= 0) {
-      _documents[existingIndex] = document;
+     ;
       print('✏️ Document mis à jour: ${document.id}');
     } else {
       _documents.insert(0, document);
@@ -329,28 +240,7 @@ class DocumentProvider with ChangeNotifier {
       final targetUserId = userId ?? _currentUserId;
       bool apiSuccess = false;
 
-      // 1. Supprimer de l'API si utilisateur connecté
-      if (targetUserId != null) {
-        try {
-          // Essayer d'abord la suppression normale
-          apiSuccess = await _apiService.deleteDocument(documentId);
-
-          // Si échec, essayer la suppression admin (au cas où)
-          if (!apiSuccess) {
-            print('🔄 Tentative suppression via route admin...');
-            apiSuccess = await _apiService.deleteInvoiceAsAdmin(documentId);
-          }
-        } catch (e) {
-          print('⚠️ Erreur suppression API: $e');
-          apiSuccess = false;
-        }
-      }
-
-      // 2. Supprimer de la liste locale (même si API échoue)
-      _documents.removeWhere((doc) => doc.id == documentId);
-
-      // 3. Mettre à jour le cache local
-      await _saveDocumentsToLocalStorage();
+      
 
       // 4. Supprimer également du stockage local spécifique
       await _removeFromLocalStorage(documentId, targetUserId);
@@ -455,14 +345,7 @@ class DocumentProvider with ChangeNotifier {
 
   // ✅ GÉNÉRER PDF
   Future<String?> generateAndDownloadPDF(ScannedDocument document, BuildContext context) async {
-    try {
-      print('📄 Génération du PDF...');
-
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        throw Exception('Permission de stockage refusée');
-      }
-
+    
       final pdf = await _generatePDF(document);
 
       final directory = await getExternalStorageDirectory();
@@ -479,18 +362,7 @@ class DocumentProvider with ChangeNotifier {
 
       print('✅ PDF généré: $filePath');
 
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('PDF généré: $fileName'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-
-      return filePath;
-
+      
     } catch (e) {
       print('❌ Erreur génération PDF: $e');
 
@@ -530,16 +402,7 @@ class DocumentProvider with ChangeNotifier {
   }
 
   Future<void> _saveDocumentsToLocalStorage() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final documentsData = _documents.map((doc) => doc.toMap()).toList();
-      final key = 'cached_documents_${_currentUserId ?? 'guest'}';
-      await prefs.setString(key, json.encode(documentsData));
-      print('💾 ${_documents.length} documents en cache pour user $_currentUserId');
-    } catch (e) {
-      print('❌ Erreur sauvegarde cache: $e');
-    }
-  }
+   
 
   Future<void> _loadFromLocalStorage() async {
     try {
@@ -568,16 +431,7 @@ class DocumentProvider with ChangeNotifier {
         if (_documents.isEmpty) {
           _error = 'Aucun document en cache';
         }
-      } else {
-        _documents = [];
-        print('📂 Aucun document en cache');
-      }
-    } catch (e) {
-      print('❌ Erreur chargement cache: $e');
-      _error = 'Erreur chargement données locales';
-      _documents = [];
-    }
-  }
+      
 
   // ✅ MÉTHODES UTILITAIRES
   double _parseAmount(dynamic amount) {
@@ -612,18 +466,7 @@ class DocumentProvider with ChangeNotifier {
         final parts = dateStr.split(separator);
         if (parts.length == 3) {
           if (parts[0].length == 4) {
-            final year = parts[0].padLeft(4, '20');
-            final month = parts[1].padLeft(2, '0');
-            final day = parts[2].padLeft(2, '0');
-            return '$year-$month-$day';
-          } else {
-            final day = parts[0].padLeft(2, '0');
-            final month = parts[1].padLeft(2, '0');
-            final year = parts[2].length == 2 ? '20${parts[2]}' : parts[2];
-            return '$year-$month-$day';
-          }
-        }
-      }
+            
 
       final parsedDate = DateTime.tryParse(dateStr);
       if (parsedDate != null) {
@@ -644,26 +487,7 @@ class DocumentProvider with ChangeNotifier {
       pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Center(
-                child: pw.Text(
-                  'FACTURE',
-                  style: pw.TextStyle(fontSize: 28, fontWeight: pw.FontWeight.bold),
-                ),
-              ),
-              pw.SizedBox(height: 10),
-              pw.Divider(thickness: 2),
-              pw.SizedBox(height: 20),
-
-              pw.Row(
-                children: [
-                  pw.Expanded(
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text('Numéro: ${extractedData['invoice_number'] ?? 'N/A'}'),
+          r? 'N/A'}'),
                         pw.Text('Date: ${_formatDateForDisplay(extractedData['invoice_date'])}'),
                         pw.Text('Devise: ${extractedData['currency'] ?? 'TND'}'),
                       ],
@@ -700,22 +524,7 @@ class DocumentProvider with ChangeNotifier {
                       ],
                     ),
                   ),
-                  pw.SizedBox(width: 20),
-                  pw.Expanded(
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text('CLIENT', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.SizedBox(height: 5),
-                        pw.Text(extractedData['client_name'] ?? 'Non spécifié'),
-                        pw.Text(extractedData['client_address'] ?? ''),
-                        pw.Text('MF: ${extractedData['client_tax_id'] ?? ''}'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
+                 
               pw.SizedBox(height: 20),
               pw.Divider(),
               pw.SizedBox(height: 20),
@@ -743,24 +552,7 @@ class DocumentProvider with ChangeNotifier {
                       ),
                     ],
                   ),
-                  _buildPDFTableRow('Total HT', extractedData['total_ht']),
-                  _buildPDFTableRow('TVA (${extractedData['tva_rate'] ?? '19'}%)', extractedData['tva_amount']),
-                  _buildPDFTableRow('Total TTC', extractedData['total_ttc']),
-                  if (extractedData['retenue_source'] != null && _parseAmount(extractedData['retenue_source']) > 0)
-                    _buildPDFTableRow('Retenue source', extractedData['retenue_source']),
-                  if (extractedData['timbre_fiscal'] != null && _parseAmount(extractedData['timbre_fiscal']) > 0)
-                    _buildPDFTableRow('Timbre fiscal', extractedData['timbre_fiscal']),
-                  pw.TableRow(
-                    decoration: const pw.BoxDecoration(color: PdfColors.grey100),
-                    children: [
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8),
-                        child: pw.Text('NET À PAYER', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(8),
-                        child: pw.Text(
-                          _formatAmountForPDF(extractedData['net_a_payer']),
+                 edData['net_a_payer']),
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                         ),
                       ),
@@ -814,25 +606,7 @@ class DocumentProvider with ChangeNotifier {
     }
   }
 
-  String _formatDateForDisplay(dynamic date) {
-    if (date == null) return 'Non spécifiée';
-    try {
-      if (date is DateTime) return DateFormat('dd/MM/yyyy').format(date);
-      if (date is String) {
-        if (date.contains('-')) {
-          final parsed = DateTime.tryParse(date);
-          if (parsed != null) return DateFormat('dd/MM/yyyy').format(parsed);
-        }
-        if (date.contains('/')) {
-          final parts = date.split('/');
-          if (parts.length == 3) {
-            if (parts[0].length == 4) {
-              return '${parts[2]}/${parts[1]}/${parts[0]}';
-            } else {
-              return date;
-            }
-          }
-        }
+ 
       }
       return date.toString();
     } catch (e) {
@@ -869,27 +643,14 @@ class DocumentProvider with ChangeNotifier {
   }
 
   // ✅ EFFACER LE DOCUMENT COURANT
-  void clearCurrentDocument() {
-    _currentDocument = null;
-    notifyListeners();
-  }
+ 
+  
 
-  // ✅ EFFACER LES ERREURS
-  void clearError() {
-    _error = '';
-    notifyListeners();
-  }
-
+ 
   // ✅ RÉINITIALISER LE PROVIDER
   void reset() {
     _documents.clear();
-    _currentDocument = null;
-    _error = '';
-    _isLoading = false;
-    _processingProgress = 0.0;
-    _currentUserId = null;
-    notifyListeners();
-    print('🔄 DocumentProvider réinitialisé');
+   
   }
 }
 
