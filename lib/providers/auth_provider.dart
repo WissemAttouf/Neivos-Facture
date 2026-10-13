@@ -11,36 +11,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   UserModel? _user;
-  String? _authToken;
-  bool _isLoading = false;
-  String _error = '';
-  bool _isConnected = false;
+  
 
-  UserModel? get user => _user;
-  String? get authToken => _authToken;
-  bool get isLoading => _isLoading;
-  String get error => _error;
-  bool get isConnected => _isConnected;
-  bool get isLoggedIn => _user != null && _authToken != null;
+ 
 
-  // ✅ Vérifier si l'utilisateur est admin
-  bool get isAdmin => _user?.role == 'admin';
-
-  // ✅ Vérifier si l'utilisateur est comptable ou admin
-  bool get isAccountantOrAdmin => _user?.role == 'admin' || _user?.role == 'accountant';
-
-  // ✅ Récupérer le rôle de l'utilisateur
-  String get userRole => _user?.role ?? 'user';
-
-  static const String _baseUrl = '10.123.109.205:8086';
+  
   static const String _baseUploadUrl = 'http://10.123.109.205/uploads/profiles/';
 
   // 🔐 LOGIN
   Future<void> login(String email, String password) async {
     _isLoading = true;
-    _error = '';
-    _isConnected = false;
-    notifyListeners();
+    
 
     try {
       print('🔐 Tentative de connexion: $email');
@@ -52,15 +33,7 @@ class AuthProvider with ChangeNotifier {
 
       print('📥 Réponse login: ${response.statusCode}');
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        if (data['success'] == true) {
-          _authToken = data['accessToken'];
-          _user = UserModel.fromJson(data['user']);
-          _isConnected = true;
-          _error = '';
-
+      
           await _saveUser(data['user'], data['accessToken']);
           print('✅ LOGIN RÉUSSI: ${_user?.username} (Rôle: ${_user?.role})');
 
@@ -74,17 +47,7 @@ class AuthProvider with ChangeNotifier {
         throw Exception(data['message'] ?? 'Identifiants incorrects');
       } else if (response.statusCode == 400) {
         throw Exception('Données invalides');
-      } else {
-        throw Exception('Erreur serveur: ${response.statusCode}');
       }
-
-    } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
-      _isConnected = false;
-      print('❌ Erreur login: $_error');
-      throw Exception(_error);
-    } finally {
-      _isLoading = false;
       notifyListeners();
     }
   }
@@ -113,12 +76,7 @@ class AuthProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
 
-        if (data['success'] == true) {
-          _authToken = data['accessToken'];
-          _user = UserModel.fromJson(data['user']);
-          _isConnected = true;
-          await _saveUser(data['user'], data['accessToken']);
-          _error = '';
+        
 
           print('✅ INSCRIPTION RÉUSSIE: ${_user?.username}');
           notifyListeners();
@@ -135,16 +93,7 @@ class AuthProvider with ChangeNotifier {
         throw Exception(errorData['message'] ?? 'Erreur lors de l\'inscription');
       }
 
-    } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
-      print('❌ Erreur inscription: $_error');
-      throw Exception(_error);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
-  }
-
   // ✅ EFFACER L'ERREUR
   void clearError() {
     if (_error.isNotEmpty) {
@@ -155,17 +104,7 @@ class AuthProvider with ChangeNotifier {
 
   // 🔄 AUTO-LOGIN
   Future<void> autoLogin() async {
-    try {
-      print('🔄 Tentative d\'auto-login...');
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('authToken');
-      final userJson = prefs.getString('userData');
-
-      if (token != null && userJson != null) {
-        _authToken = token;
-        _user = UserModel.fromJson(jsonDecode(userJson));
-        _isConnected = await testServerConnection();
-        _error = '';
+    
 
         print('✅ Auto-login réussi: ${_user?.username} (Rôle: ${_user?.role})');
         notifyListeners();
@@ -227,21 +166,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   // ✅ OBTENIR L'ID UTILISATEUR
-  Future<int> getCurrentUserId() async {
-    try {
-      if (_user != null && _user!.id != null) {
-        return _user!.id;
-      }
-
-      final prefs = await SharedPreferences.getInstance();
-      final userData = prefs.getString('userData');
-
-      if (userData != null) {
-        final userMap = json.decode(userData);
-        final userId = userMap['id']?.toString();
-        if (userId != null && userId.isNotEmpty) {
-          return int.tryParse(userId) ?? -1;
-        }
+  
       }
 
       print('⚠️ Aucun ID utilisateur trouvé');
@@ -306,20 +231,7 @@ class AuthProvider with ChangeNotifier {
           throw Exception('Le fichier image n\'existe pas');
         }
 
-        final mimeType = lookupMimeType(profileImage.path) ?? 'image/jpeg';
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'profileImage',
-            profileImage.path,
-            contentType: MediaType.parse(mimeType),
-          ),
-        );
-        print('📸 Image ajoutée: ${profileImage.path}');
-      }
-
-      print('📤 Envoi de la requête...');
-      final streamedResponse = await request.send().timeout(const Duration(seconds: 30));
-      final response = await http.Response.fromStream(streamedResponse);
+        
 
       print('📥 Réponse status: ${response.statusCode}');
 
@@ -371,15 +283,7 @@ class AuthProvider with ChangeNotifier {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('userData', jsonEncode(data['user']));
 
-          print('✅ Profil récupéré avec succès');
-          print('👤 Utilisateur: ${_user?.username} (Rôle: ${_user?.role})');
-          notifyListeners();
-        }
-      } else if (response.statusCode == 401) {
-        print('❌ Token expiré, déconnexion...');
-        await logout();
-      }
-    } catch (e) {
+         
       print('❌ Erreur fetchUserProfile: $e');
     }
   }
@@ -426,37 +330,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // 🔑 CHANGER LE MOT DE PASSE
-  Future<void> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    _isLoading = true;
-    _error = '';
-    notifyListeners();
-
-    try {
-      print('🔄 Changement de mot de passe...');
-      final response = await http.put(
-        Uri.parse('$_baseUrl/profile'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_authToken',
-        },
-        body: jsonEncode({
-          'currentPassword': currentPassword,
-          'newPassword': newPassword,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['success'] == true) {
-          _error = '';
-          print('✅ Mot de passe changé avec succès');
-          notifyListeners();
-          return;
-        }
+ 
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(errorData['message'] ?? 'Erreur lors du changement de mot de passe');
@@ -510,15 +384,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // 🧹 RÉINITIALISER
-  void reset() {
-    print('🧹 Réinitialisation du AuthProvider...');
-    _user = null;
-    _authToken = null;
-    _isLoading = false;
-    _error = '';
-    _isConnected = false;
-    notifyListeners();
+  ;
   }
 
   // 🐛 DÉBOGAGE
