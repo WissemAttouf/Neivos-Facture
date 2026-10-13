@@ -27,22 +27,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     _loadSettings();
   }
 
-  Future<void> _loadSettings() async {
-    setState(() => _isLoading = true);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-
-    if (authProvider.authToken != null) {
-      await adminProvider.loadSettings(authProvider.authToken!);
-      final settings = adminProvider.systemSettings;
-
-      _maxUploadSize = (settings['max_upload_size'] ?? 5).toString();
-      _maxUploadController.text = _maxUploadSize;
-
-      if (settings['allowed_file_types'] != null) {
-        if (settings['allowed_file_types'] is List) {
-          _allowedFileTypes = List<String>.from(settings['allowed_file_types']);
-        }
+ 
       }
     }
     setState(() => _isLoading = false);
@@ -72,19 +57,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDarkMode = themeProvider.isDarkMode;
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: const Text('PARAMÈTRES'),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-        actions: [
-          IconButton(
+  
             icon: const Icon(Icons.save),
             onPressed: _isLoading ? null : _saveSettings,
             tooltip: 'Sauvegarder',
@@ -112,22 +85,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                         'Types de fichiers autorisés :',
                         style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color),
                       ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _fileTypes.map((type) {
-                          final isSelected = _allowedFileTypes.contains(type);
-                          return FilterChip(
-                            label: Text(type.toUpperCase()),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected && !_allowedFileTypes.contains(type)) {
-                                  _allowedFileTypes.add(type);
-                                } else if (!selected && _allowedFileTypes.contains(type)) {
-                                  _allowedFileTypes.remove(type);
-                                }
+                     
                               });
                             },
                             backgroundColor: Theme.of(context).cardColor,
@@ -151,21 +109,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 32),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _saveSettings,
-                      icon: const Icon(Icons.save, color: Colors.white),
-                      label: const Text('ENREGISTRER LES MODIFICATIONS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
+                 
 
                   const SizedBox(height: 20),
                 ],
@@ -220,16 +164,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     );
   }
 
-  Widget _buildInfoTile(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          SizedBox(width: 130, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600))),
-          const Text(':', style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(width: 12),
-          Expanded(child: Text(value, style: TextStyle(color: Theme.of(context).primaryColor))),
-        ],
+  
       ),
     );
   }
