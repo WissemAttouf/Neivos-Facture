@@ -37,51 +37,7 @@ class _HelpScreenState extends State<HelpScreen> {
 
   // ✅ MÉTHODE CORRIGÉE - Envoyer le rapport à votre serveur
   Future<void> _sendBugReport() async {
-    if (!_bugReportFormKey.currentState!.validate()) return;
-
-    if (_bugSubjectController.text.length < 3) {
-      _showSnackBar('Le sujet doit contenir au moins 3 caractères', Colors.red);
-      return;
-    }
-
-    if (_bugDescriptionController.text.length < 5) {
-      _showSnackBar('La description doit contenir au moins 5 caractères', Colors.red);
-      return;
-    }
-
-    setState(() => _isSendingBugReport = true);
-
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-      // Récupérer l'ID de l'utilisateur connecté (ou 0 si non connecté)
-      final userId = authProvider.user?.id ?? 0;
-
-      print('📝 Envoi du rapport de bug pour user: $userId');
-
-      final response = await http.post(
-        Uri.parse('http://10.123.109.210/api/bug-reports'), // VOTRE SERVEUR
-        headers: {
-          'Content-Type': 'application/json',
-          if (authProvider.authToken != null)
-            'Authorization': 'Bearer ${authProvider.authToken}',
-        },
-        body: jsonEncode({
-          'user_id': userId,
-          'subject': _bugSubjectController.text.trim(),
-          'description': _bugDescriptionController.text.trim(),
-          'app_version': '1.0.0',
-          'device_info': 'Mobile - ${Theme.of(context).platform}',
-        }),
-      ).timeout(const Duration(seconds: 10));
-
-      print('📥 Réponse status: ${response.statusCode}');
-
-      final responseBody = jsonDecode(response.body);
-
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        _showSnackBar('Rapport envoyé avec succès!', Colors.green);
-        _bugSubjectController.clear();
+ 
         _bugDescriptionController.clear();
       } else {
         throw Exception(responseBody['message'] ?? 'Erreur serveur (${response.statusCode})');
@@ -149,39 +105,7 @@ class _HelpScreenState extends State<HelpScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Stack(
-        children: [
-          ParticleBackground(isDarkMode: isDarkMode),
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // Section FAQ
-                _buildSectionCard(
-                  title: 'Foire Aux Questions',
-                  icon: Icons.help_outline,
-                  children: [
-                    _buildExpansionTile(
-                      title: 'Comment scanner un document ?',
-                      content: '1. Allez dans l\'onglet Scanner\n'
-                          '2. Prenez une photo du document\n'
-                          '3. Validez la capture\n\n'
-                          'L\'OCR analysera automatiquement le document et extraira les données.',
-                      context: context,
-                    ),
-                    _buildExpansionTile(
-                      title: 'Comment corriger les données ?',
-                      content: 'Après le scan, vous serez redirigé vers l\'écran de validation. '
-                          'Vous pouvez modifier manuellement tous les champs détectés avant '
-                          'd\'enregistrer le document dans votre collection.',
-                      context: context,
-                    ),
-                    _buildExpansionTile(
-                      title: 'Comment retrouver un document ?',
-                      content: 'Utilisez la fonction de recherche ou les filtres '
-                          'dans l\'onglet "Documents". Vous pouvez également utiliser '
-                          'le Chat IA pour rechercher par mots-clés.',
-                      context: context,
+     
                     ),
                     _buildExpansionTile(
                       title: 'L\'OCR fonctionne-t-il hors ligne ?',
@@ -377,23 +301,7 @@ class _HelpScreenState extends State<HelpScreen> {
                   ],
                 ),
 
-                const SizedBox(height: 16),
-
-                // Section Contact direct
-                _buildSectionCard(
-                  title: 'Contact direct',
-                  icon: Icons.phone,
-                  children: [
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.phone, color: Colors.green, size: 20),
-                      ),
-                      title: Text(
+              
                         'Téléphone',
                         style: TextStyle(
                           color: textColor,
@@ -492,15 +400,6 @@ class _HelpScreenState extends State<HelpScreen> {
       ),
     );
   }
-
-  Widget _buildExpansionTile({required String title, required String content, required BuildContext context}) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = AppTheme.getTextColor(context);
-    final secondaryTextColor = AppTheme.getSecondaryTextColor(context);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
@@ -514,24 +413,6 @@ class _HelpScreenState extends State<HelpScreen> {
             surface: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
           ),
         ),
-        child: ExpansionTile(
-          title: Text(
-            title,
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          iconColor: AppTheme.primaryColor,
-          collapsedIconColor: secondaryTextColor,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                content,
-                style: TextStyle(
-                  color: secondaryTextColor,
-                  height: 1.5,
                 ),
               ),
             ),
