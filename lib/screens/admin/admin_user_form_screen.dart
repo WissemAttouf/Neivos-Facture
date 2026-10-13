@@ -7,11 +7,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/particle_background.dart';
 
 class AdminUserFormScreen extends StatefulWidget {
-  final UserModel? user;
-  final String token;
-
-  const AdminUserFormScreen({super.key, this.user, required this.token});
-
+  
   @override
   State<AdminUserFormScreen> createState() => _AdminUserFormScreenState();
 }
@@ -25,12 +21,7 @@ class _AdminUserFormScreenState extends State<AdminUserFormScreen> {
   late bool _isActive;
 
   @override
-  void initState() {
-    super.initState();
-    _usernameController = TextEditingController(text: widget.user?.username ?? '');
-    _emailController = TextEditingController(text: widget.user?.email ?? '');
-    _passwordController = TextEditingController();
-
+  
     // Par défaut, nous utilisons "accountant" au lieu de "user"
     _selectedRole = (widget.user?.role == null || widget.user?.role == 'user')
         ? 'accountant'
@@ -51,16 +42,7 @@ class _AdminUserFormScreenState extends State<AdminUserFormScreen> {
       'is_active': _isActive,
     };
 
-    if (_passwordController.text.isNotEmpty) {
-      userData['password'] = _passwordController.text;
-    }
-
-    bool success;
-    if (widget.user == null) {
-      success = await adminProvider.createUser(widget.token, userData);
-    } else {
-      success = await adminProvider.updateUser(widget.token, widget.user!.id, userData);
-    }
+   
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,22 +69,7 @@ class _AdminUserFormScreenState extends State<AdminUserFormScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          ParticleBackground(isDarkMode: isDarkMode),
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
-                      shape: BoxShape.circle,
+     
                     ),
                     child: Icon(
                       Icons.person,
@@ -140,28 +107,7 @@ class _AdminUserFormScreenState extends State<AdminUserFormScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Champ requis';
-                      if (!value.contains('@')) return 'Email invalide';
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  if (!isEditing)
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Mot de passe',
-                        prefixIcon: const Icon(Icons.lock),
-                        filled: true,
-                        fillColor: Theme.of(context).cardColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
+                 
                       ),
                       validator: (value) {
                         if (!isEditing && (value == null || value.isEmpty)) return 'Champ requis';
@@ -203,25 +149,7 @@ class _AdminUserFormScreenState extends State<AdminUserFormScreen> {
                     ],
                     onChanged: (value) => setState(() => _selectedRole = value!),
                   ),
-                  const SizedBox(height: 16),
-                  SwitchListTile(
-                    title: const Text('Compte actif'),
-                    value: _isActive,
-                    onChanged: (value) => setState(() => _isActive = value),
-                    activeColor: Colors.green,
-                    tileColor: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _saveUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
+                  
                       child: Text(
                         isEditing ? 'METTRE À JOUR' : 'CRÉER L\'UTILISATEUR',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
