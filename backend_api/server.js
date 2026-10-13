@@ -15,7 +15,11 @@ const db = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 8086;
-const JWT_SECRET = process.env.JWT_SECRET || 'neivos_secret_2024';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET doit être configuré dans les variables d’environnement.');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const OCR_API_URL = process.env.OCR_API_URL || 'http://37.60.239.139:8775';
 
 // ✅ CONFIGURATION NODEMAILER (Pour le mot de passe oublié)
