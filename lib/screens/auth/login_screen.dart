@@ -14,90 +14,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
-      auth.clearError();
-    });
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-
-    auth.clearError();
-
-    try {
-      await auth.login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
-
-      if (auth.isLoggedIn && mounted) {
-        if (auth.isAdmin) {
-          Navigator.pushReplacementNamed(context, '/admin');
-        } else {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      }
-    } catch (e) {
-      print('❌ Erreur connexion: $e');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  // ✅ NOUVELLE FONCTION : Boîte de dialogue Mot de passe oublié
-  Future<void> _showForgotPasswordDialog() async {
-    final emailCtrl = TextEditingController(text: _emailController.text);
-    bool isSending = false;
-
-    await showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setStateDialog) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: Row(
-              children: [
-                Icon(Icons.lock_reset, color: Theme.of(context).primaryColor),
-                const SizedBox(width: 10),
-                const Text('Mot de passe oublié'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Entrez votre adresse email. Nous vous enverrons un lien pour réinitialiser votre mot de passe.',
-                  style: TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: emailCtrl,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Votre Email',
-                    prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
@@ -185,71 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                centerTitle: true,
-                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-                elevation: 0,
-              ),
-              body: Stack(
-                children: [
-                  ParticleBackground(isDarkMode: themeProvider.isDarkMode),
-                  SafeArea(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const SizedBox(height: 40),
-                            Text(
-                              'Content de vous revoir',
-                              style: GoogleFonts.inter(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).textTheme.bodyLarge?.color,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Connectez-vous à votre compte',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: Theme.of(context).textTheme.bodyMedium?.color,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 40),
-
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: _inputDecoration('Email', Icons.email, context),
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) return 'Veuillez entrer votre email';
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return 'Email invalide';
-                                return null;
-                              },
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            TextFormField(
-                              controller: _passwordController,
-                              decoration: _inputDecoration(
-                                'Mot de passe',
-                                Icons.lock,
-                                context,
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                                    color: Theme.of(context).textTheme.bodyMedium?.color,
-                                  ),
-                                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                                ),
-                              ),
-                              obscureText: _obscurePassword,
-                              validator: (value) {
+                
                                 if (value == null || value.isEmpty) return 'Veuillez entrer votre mot de passe';
                                 return null;
                               },
@@ -364,12 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
       prefixIcon: Icon(icon, color: Theme.of(context).textTheme.bodyMedium?.color),
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: Theme.of(context).cardColor,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2)),
-      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red)),
-      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.red, width: 2)),
-    );
+     
   }
 }
