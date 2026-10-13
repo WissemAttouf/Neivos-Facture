@@ -20,12 +20,7 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const AdminStatsScreen(),
-    const AdminUsersScreen(),
-    const AdminInvoicesScreen(),
-    const AdminSettingsScreen(),
-  ];
+ 
 
   final List<String> _titles = [
     'TABLEAU DE BORD',
@@ -54,20 +49,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = themeProvider.isDarkMode;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/images/ssvg.PNG',
-              height: 35,
-              width: 35,
-              errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.admin_panel_settings, size: 28, color: Colors.white),
-            ),
-            const SizedBox(width: 8),
+    dth: 8),
             Text(
               _titles[_selectedIndex],
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -114,15 +96,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Déconnexion'),
-        content: const Text('Voulez-vous vraiment vous déconnecter ?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
-          TextButton(
-            onPressed: () {
+   
               Provider.of<AuthProvider>(context, listen: false).logout();
               Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
             },
