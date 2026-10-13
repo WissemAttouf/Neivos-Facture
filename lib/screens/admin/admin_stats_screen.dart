@@ -25,15 +25,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
     _loadData();
   }
 
-  Future<void> _loadData() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-
-    if (authProvider.authToken != null) {
-      await adminProvider.loadAllData(authProvider.authToken!);
-      await _loadBugReports(authProvider.authToken!);
-    }
-  }
+ 
 
   Future<void> _loadBugReports(String token) async {
     setState(() => _isLoadingBugs = true);
@@ -62,21 +54,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
     }
   }
 
-  String _formatAmount(dynamic value) {
-    if (value == null) return '0.000 TND';
-    try {
-      if (value is String) {
-        final parsed = double.tryParse(value);
-        if (parsed != null) return '${parsed.toStringAsFixed(3)} TND';
-        return '$value TND';
-      }
-      if (value is num) return '${value.toStringAsFixed(3)} TND';
-      return '0.000 TND';
-    } catch (e) {
-      return '0.000 TND';
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -114,18 +92,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return RefreshIndicator(
-      onRefresh: _loadData,
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Cartes statistiques principales
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final double cardWidth = (constraints.maxWidth - 16) / 2;
+    
                 return Wrap(
                   spacing: 16,
                   runSpacing: 16,
@@ -163,16 +130,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
                         isDarkMode: isDarkMode,
                       ),
                     ),
-                    SizedBox(
-                      width: cardWidth,
-                      child: _buildStatCard(
-                        context,
-                        title: 'Actifs/Inactifs',
-                        value: '$activeUsers/$inactiveUsers',
-                        icon: Icons.person_outline,
-                        color: Colors.purple,
-                        isDarkMode: isDarkMode,
-                      ),
+                    
                     ),
                   ],
                 );
@@ -222,23 +180,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
             const SizedBox(height: 20),
 
             // Remplacement d'Activité Récente par Bugs (Signalement)
-            Card(
-              elevation: 3,
-              color: isDarkMode ? const Color(0xFF2D2D2D) : Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.bug_report, color: Colors.orange),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Signalements de bugs',
-                          style: TextStyle(
-                            fontSize: 18,
+            
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).textTheme.bodyLarge?.color,
                           ),
@@ -281,23 +223,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
     required Color color,
     required bool isDarkMode,
   }) {
-    return Card(
-      elevation: 3,
-      color: isDarkMode ? const Color(0xFF2D2D2D) : Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 28),
-            ),
+    
             const SizedBox(height: 12),
             Text(
               value,
@@ -343,12 +269,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
               color: color,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: isDarkMode ? Colors.white70 : Colors.grey[700],
+          
             ),
           ),
         ],
@@ -384,17 +305,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
             'Signalé par: $userName\nLe: ${_formatDate(report['reported_at'])}',
             style: const TextStyle(fontSize: 11),
           ),
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.black12 : Colors.white,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-              ),
+         
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -414,12 +325,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
 
   String _formatDate(dynamic date) {
     if (date == null) return '';
-    try {
-      final parsed = DateTime.tryParse(date.toString());
-      if (parsed != null) {
-        return '${parsed.day.toString().padLeft(2,'0')}/${parsed.month.toString().padLeft(2,'0')}/${parsed.year} à ${parsed.hour.toString().padLeft(2,'0')}:${parsed.minute.toString().padLeft(2,'0')}';
-      }
-    } catch (e) {}
+    
     return date.toString();
   }
 }
