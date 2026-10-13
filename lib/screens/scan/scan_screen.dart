@@ -1,50 +1,6 @@
 // scan_screen.dart - VERSION AVEC PRISE DE PHOTOS MULTIPLES
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import '../../models/document_model.dart';
-import '../../providers/document_provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/theme_provider.dart';
-import '../../services/ocr_service.dart';
-import '../../services/api_service.dart';
-import '../../widgets/particle_background.dart';
-import '../../widgets/image_editor_sheet.dart';
-import '../validation/data_validation_screen.dart';
-
-class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key});
-
-  @override
-  State<ScanScreen> createState() => _ScanScreenState();
-}
-
-class _ScanScreenState extends State<ScanScreen> {
-  final ImagePicker _picker = ImagePicker();
-  File? _selectedImage;
-  bool _permissionRequestInProgress = false;
-  bool _isProcessing = false;
-  bool _isTestingApi = false;
-  double _processingProgress = 0.0;
-  String? _errorMessage;
-  OCRService? _ocrService;
-  String _apiStatus = 'Prêt';
-  String _ocrInfo = 'API NEIVOS OCR: http://37.60.239.139:8775';
-
-  @override
-  void initState() {
-    super.initState();
-    if (!kIsWeb) {
-      _requestPermissions();
-    }
-    _initializeServices();
-    _testApiConnection();
-  }
 
   void _initializeServices() {
     try {
@@ -306,83 +262,13 @@ class _ScanScreenState extends State<ScanScreen> {
       _errorMessage = null;
     });
 
-    try {
-      _updateProgress(0.1, 'Chargement des ${imageFiles.length} images...');
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      _updateProgress(0.3, 'Envoi à l\'API OCR NEIVOS...');
-
-      final documents = await _ocrService!.processMultipleDocuments(imageFiles);
-
-      if (documents.isNotEmpty) {
-        _updateProgress(0.9, 'Préparation de la validation...');
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        if (mounted) {
-          setState(() {
-            _isProcessing = false;
-          });
-        }
-
-        int successCount = 0;
-
-        for (int i = 0; i < documents.length; i++) {
-          if (!mounted) break;
-
-          final doc = documents[i];
-          final file = imageFiles[i];
-
-          final bytes = await file.readAsBytes();
-          final base64Image = base64Encode(bytes);
-
-          await _saveDocumentTemporarily(doc, base64Image);
-
-          if (mounted) {
-            if (documents.length > 1) {
-              _showSnackBar('Validation facture ${i + 1} sur ${documents.length}', Colors.blue);
-            }
-
-            final savedDocument = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DataValidationScreen.fromParams(
-                  extractedData: doc.extractedData,
-                  confidence: doc.confidence,
-                  rawText: doc.extractedData['raw_text'] ?? '',
-                  imagePath: file.path,
-                  imageBase64: base64Image,
-                ),
-              ),
-            );
-
-            if (savedDocument == true) {
-              successCount++;
-            }
-          }
-        }
-
-        if (mounted) {
-          _showSnackBar('Terminé ! $successCount/${documents.length} factures sauvegardées.', Colors.green);
+   miné ! $successCount/${documents.length} factures sauvegardées.', Colors.green);
           _resetScan();
         }
       } else {
         throw Exception('L\'OCR n\'a retourné aucun résultat');
       }
-    } catch (e) {
-      print('❌ Erreur traitement: $e');
-      setState(() {
-        _errorMessage = 'Erreur: ${e.toString().replaceAll("Exception: ", "")}';
-      });
-      _showSnackBar(_errorMessage!, Colors.red);
-    } finally {
-      if (mounted && _isProcessing) {
-        setState(() {
-          _isProcessing = false;
-          _processingProgress = 0.0;
-        });
-      }
-    }
-  }
+  
 
   Future<void> _processImageWithYourAPI() async {
     if (_selectedImage == null || _ocrService == null) return;
@@ -499,20 +385,7 @@ class _ScanScreenState extends State<ScanScreen> {
             ),
         ],
       ),
-      body: Stack(
-        children: [
-          ParticleBackground(isDarkMode: isDarkMode),
-          if (_isTestingApi) _buildTestingOverlay(),
-          _isProcessing
-              ? _buildProcessingView()
-              : _selectedImage != null
-              ? _buildImagePreview()
-              : _buildScanOptions(isLoggedIn),
-        ],
-      ),
-    );
-  }
-
+     
   Widget _buildTestingOverlay() {
     return Container(
       color: Colors.black54,
@@ -590,40 +463,7 @@ class _ScanScreenState extends State<ScanScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.orange),
               ),
-              child: Column(
-                children: [
-                  const Icon(Icons.warning, color: Colors.orange, size: 40),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Vous devez être connecté pour scanner des factures',
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/login'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                    ),
-                    child: const Text('SE CONNECTER'),
-                  ),
-                ],
-              ),
-            )
-          else ...[
-            SizedBox(
-              width: 280,
-              child: ElevatedButton.icon(
-                onPressed: _pickFromGallery,
-                icon: const Icon(Icons.photo_library),
-                label: const Text('Choisir depuis la galerie'),
-                style: ElevatedButton.styleFrom(
+              
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
@@ -723,27 +563,7 @@ class _ScanScreenState extends State<ScanScreen> {
     );
   }
 
-  Widget _buildInfoCards() {
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.blue, width: 1),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.auto_awesome, color: Colors.blue, size: 30),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Extraction automatique',
+
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
@@ -822,21 +642,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: _selectedImage != null
-                    ? Image.file(
-                  _selectedImage!,
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                )
-                    : Center(
-                  child: Text(
-                    'Image non disponible',
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
-                    ),
-                  ),
+              
                 ),
               ),
             ),
@@ -948,22 +754,7 @@ class _ScanScreenState extends State<ScanScreen> {
     );
   }
 
-  Widget _buildProcessingView() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 120,
-              height: 120,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    value: _processingProgress,
-                    strokeWidth: 10,
+ 
                     color: Theme.of(context).primaryColor,
                     backgroundColor:
                     Theme.of(context).primaryColor.withOpacity(0.2),
