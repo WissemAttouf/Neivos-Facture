@@ -2,11 +2,7 @@
 import 'dart:convert';
 
 class ExtractedData {
-  final Map<String, dynamic> data;
-  final double overallConfidence;
-  final DateTime processedAt;
-  final String processedWith;
-
+  
   ExtractedData({
     required this.data,
     this.overallConfidence = 0.0,
@@ -22,16 +18,7 @@ class ExtractedData {
         processedWith: 'api_ocr_structured',
       );
     } else if (apiResponse is String) {
-      return ExtractedData(
-        data: {'raw_text': apiResponse},
-        overallConfidence: 0.8,
-        processedWith: 'api_ocr_text',
-      );
-    } else {
-      return ExtractedData(
-        data: {'error': 'Format de réponse non supporté'},
-        overallConfidence: 0.0,
-        processedWith: 'error',
+      
       );
     }
   }
@@ -45,25 +32,15 @@ class ExtractedData {
   }
 
   String? get invoiceNumber => data['invoice_number']?.toString();
-  String? get invoiceDate => data['invoice_date']?.toString();
-  String? get supplierName => data['supplier_name']?.toString();
-  String? get clientName => data['client_name']?.toString();
-  String? get totalHT => data['total_ht']?.toString();
-  String? get totalTTC => data['total_ttc']?.toString();
-  String? get tvaAmount => data['tva_amount']?.toString();
-  String? get tvaRate => data['tva_rate']?.toString();
+ 
 
 
   String? get netAPayer => data['net_a_payer']?.toString();
-  String? get retenueSource => data['retenue_source']?.toString();
-  String? get timbreFiscal => data['timbre_fiscal']?.toString();
-  String? get tauxTVA => data['taux_tva']?.toString();
-  String? get montantTVA => data['montant_tva']?.toString();
+ 
 
 
   String? get matriculeFiscalFournisseur => data['matricule_fiscal_fournisseur']?.toString() ?? data['mf_fournisseur']?.toString();
-  String? get matriculeFiscalClient => data['matricule_fiscal_client']?.toString() ?? data['mf_client']?.toString();
-  String? get matriculeFiscal => data['matricule_fiscal']?.toString();
+
 
   String? get rawText => data['raw_text']?.toString();
 
@@ -71,9 +48,7 @@ class ExtractedData {
   double get calculatedNetAPayer {
     try {
       final ttc = double.tryParse(totalTTC ?? '') ?? 0.0;
-      final retenue = double.tryParse(retenueSource ?? '') ?? 0.0;
-      final timbre = double.tryParse(timbreFiscal ?? '') ?? 0.0;
-      return ttc - retenue - timbre;
+     
     } catch (e) {
       return 0.0;
     }
@@ -81,18 +56,12 @@ class ExtractedData {
 
 
   bool get hasCompleteFinancialData => totalTTC != null && totalTTC!.isNotEmpty;
-  bool get hasNetAPayerData => netAPayer != null && netAPayer!.isNotEmpty;
-  bool get hasRetenueSourceData => retenueSource != null && retenueSource!.isNotEmpty;
-  bool get hasTimbreFiscalData => timbreFiscal != null && timbreFiscal!.isNotEmpty;
-  bool get hasMatriculeFiscalData => matriculeFiscal != null && matriculeFiscal!.isNotEmpty;
-
+  
 
   List<String> get missingFinancialFields {
     final missing = <String>[];
     if (!hasNetAPayerData) missing.add('Net à payer');
-    if (!hasRetenueSourceData) missing.add('Retenue à la source');
-    if (!hasTimbreFiscalData) missing.add('Timbre fiscal');
-    if (!hasMatriculeFiscalData) missing.add('Matricule fiscal');
+  
     return missing;
   }
 
@@ -111,9 +80,7 @@ class ExtractedData {
     final map = json.decode(jsonString);
     return ExtractedData(
       data: Map<String, dynamic>.from(map['data']),
-      overallConfidence: (map['overallConfidence'] ?? 0.0).toDouble(),
-      processedAt: DateTime.parse(map['processedAt']),
-      processedWith: map['processedWith'] ?? 'unknown',
+      
     );
   }
 
@@ -134,28 +101,21 @@ class ExtractedData {
     );
   }
 
-  // ✅ MÉTHODE POUR CORRIGER LES CHAMPS MANQUANTS
-  ExtractedData withFinancialCorrections({
-    double? netAPayer,
-    double? retenueSource,
+  
     double? timbreFiscal,
     String? matriculeFiscal,
   }) {
     final correctedData = Map<String, dynamic>.from(data);
 
     if (netAPayer != null) correctedData['net_a_payer'] = netAPayer;
-    if (retenueSource != null) correctedData['retenue_source'] = retenueSource;
-    if (timbreFiscal != null) correctedData['timbre_fiscal'] = timbreFiscal;
-    if (matriculeFiscal != null) correctedData['matricule_fiscal'] = matriculeFiscal;
+  
 
     correctedData['manually_corrected'] = true;
     correctedData['correction_timestamp'] = DateTime.now().toIso8601String();
 
     return ExtractedData(
       data: correctedData,
-      overallConfidence: overallConfidence + 0.1, // Augmente la confiance après correction
-      processedAt: processedAt,
-      processedWith: '$processedWith + manual_correction',
+ 
     );
   }
 
