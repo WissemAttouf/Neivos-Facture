@@ -226,8 +226,8 @@ The relevant variable names are:
 
 ```dotenv
 DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
+DB_PORT=
+DB_USER=
 DB_NAME=ocr_scanner_db
 PORT=8086
 OCR_API_URL=http://YOUR_OCR_HOST:8775
