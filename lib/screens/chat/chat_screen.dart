@@ -35,18 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _addWelcomeMessage();
   }
 
-  void _addWelcomeMessage() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {
-          _messages.add({
-            "text": "👋 **Bonjour ! Je suis votre assistant expert comptable.**\nJe réponds à vos questions fréquentes concernant la comptabilité et la fiscalité.",
-            "isUser": false,
-            "timestamp": DateTime.now(),
-            "isWelcome": true,
-          });
-          _isFirstLoad = false;
-        });
+  
 
         // Afficher les suggestions manuelles
         _addSuggestions([
@@ -95,15 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   // ✅ FONCTION DE RECHERCHE DANS LE DICTIONNAIRE
-  String _searchManualResponse(String query) {
-    String lowerQuery = query.toLowerCase();
-
-    for (var entry in _manualKnowledgeBase.entries) {
-      // Si la question de l'utilisateur contient un des mots-clés de la base (ex: "TVA", "achat", etc.)
-      if (lowerQuery.contains(entry.key.toLowerCase())) {
-        return "💡 **Réponse à votre question :**\n\n${entry.value}";
-      }
-    }
+ 
 
     // Fallback si la question n'est pas reconnue
     return "🤖 Je suis désolé, je n'ai pas la réponse exacte à cette question dans ma base de connaissances actuelle.\n\nVous pouvez me poser des questions sur :\n- La comptabilisation d'une facture d'achat ou de vente\n- Le taux de TVA\n- La retenue à la source\n- Le timbre fiscal\n- Les amortissements\n- Le rapprochement bancaire";
@@ -131,12 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
+        
         }
       });
     }
@@ -181,23 +157,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-        // Les "actions" contenant le bouton de suppression ont été retirées ici
-      ),
-      body: Stack(
-        children: [
-          ParticleBackground(isDarkMode: isDarkMode),
-          Column(
-            children: [
-              // En-tête du chat avec statut
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                ),
-                child: Row(
+        
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8),
@@ -434,25 +394,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ? Colors.red.withOpacity(0.1)
                     : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(16),
-                  topRight: const Radius.circular(16),
-                  bottomLeft: Radius.circular(isUser ? 16 : 4),
-                  bottomRight: Radius.circular(isUser ? 4 : 16),
-                ),
-                border: !isUser && !isError
-                    ? Border.all(color: Theme.of(context).dividerColor.withOpacity(0.2))
-                    : isError
-                    ? Border.all(color: Colors.red.withOpacity(0.3))
-                    : null,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!isUser && !isError)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        '🤖 Expert Comptable',
+     
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
@@ -485,14 +427,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
             ),
-          ),
-          if (isUser)
-            const SizedBox(width: 8),
-          if (isUser)
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: const Icon(Icons.person, color: Colors.white, size: 18),
+       
             ),
         ],
       ),
