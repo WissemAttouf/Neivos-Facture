@@ -33,16 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _saveError = '';
 
   @override
-  void initState() {
-    super.initState();
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _nameController = TextEditingController(text: authProvider.user?.username ?? '');
-    _emailController = TextEditingController(text: authProvider.user?.email ?? '');
-    _currentPasswordController = TextEditingController();
-    _newPasswordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
-    _checkStoragePermission();
-  }
+ 
 
   Future<void> _checkStoragePermission() async {
     if (_isCheckingPermission) return;
@@ -134,18 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final response = await http.head(Uri.parse(url));
         print('📡 Status: ${response.statusCode}');
 
-        if (response.statusCode == 200) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('✅ Image accessible'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
+        
               SnackBar(
                 content: Text('❌ Image inaccessible: ${response.statusCode}'),
                 backgroundColor: Colors.red,
@@ -274,17 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _togglePasswordFields() {
-    setState(() {
-      _showPasswordFields = !_showPasswordFields;
-      if (!_showPasswordFields) {
-        _currentPasswordController.clear();
-        _newPasswordController.clear();
-        _confirmPasswordController.clear();
-      }
-    });
-  }
-
+ 
   @override
   void dispose() {
     _nameController.dispose();
@@ -401,22 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
 
-                      if (_profileImage != null)
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: _removeImage,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.close, size: 20, color: Colors.white),
-                            ),
-                          ),
-                        ),
+                     
 
                       Positioned(
                         bottom: 0,
@@ -543,21 +498,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 16),
 
-                    TextFormField(
-                      controller: _newPasswordController,
-                      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Nouveau mot de passe',
-                        labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                        prefixIcon: Icon(Icons.lock_outline, color: Theme.of(context).textTheme.bodyMedium?.color),
-                        filled: true,
-                        fillColor: Theme.of(context).cardColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
+                   
                       validator: (value) {
                         if (_showPasswordFields && (value == null || value.isEmpty)) {
                           return 'Ce champ est requis';
@@ -636,17 +577,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: _isSaving
-                          ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                          : Text(
-                        'SAUVEGARDER LES MODIFICATIONS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                     
                         ),
                       ),
                     ),
