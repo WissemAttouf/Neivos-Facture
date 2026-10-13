@@ -139,6 +139,9 @@ The supplied examples illustrate invoice fields such as supplier, customer, date
 
 ## Architecture
 
+For a component-by-component overview and data-flow diagram, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+
 ```mermaid
 flowchart TD
     A[Flutter mobile app] <-->|HTTP / REST| B[Node.js + Express API]
@@ -211,7 +214,15 @@ cd backend_api
 npm install
 ```
 
-Create a local `.env` file using the variable names expected by the backend. The current setup uses configuration values equivalent to:
+Create a private local `.env` file from the safe template. The template contains placeholders only; set `OCR_API_URL` to the endpoint supplied for your environment:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Run the copy command from `backend_api/`. The backend configuration template is [`backend_api/.env.example`](backend_api/.env.example).
+
+The relevant variable names are:
 
 ```dotenv
 DB_HOST=localhost
@@ -219,10 +230,10 @@ DB_PORT=3306
 DB_USER=root
 DB_NAME=ocr_scanner_db
 PORT=8086
-OCR_API_URL=http://37.60.239.139:8775
+OCR_API_URL=http://YOUR_OCR_HOST:8775
 ```
 
-Add any other variables required by the implementation. Never commit `.env`, passwords, tokens, or other secrets. Check `package.json` for the actual start script before starting the backend.
+Add any other variables required by the implementation. Never commit `.env`, passwords, tokens, or other secrets. Start the backend in development mode with `npm run dev`, or use `npm start` for the normal start command. Both scripts are defined in `backend_api/package.json`.
 
 Check backend health at:
 
