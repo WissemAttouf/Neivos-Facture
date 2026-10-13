@@ -17,13 +17,7 @@ class AdminInvoicesScreen extends StatefulWidget {
   State<AdminInvoicesScreen> createState() => _AdminInvoicesScreenState();
 }
 
-class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
-  String _searchQuery = '';
-  // Nouveaux filtres de recherche
-  String _filterComptableName = '';
-  DateTime? _filterGivenDate;
 
-  final TextEditingController _comptableController = TextEditingController();
 
   @override
   void initState() {
@@ -37,14 +31,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
     super.dispose();
   }
 
-  Future<void> _loadInvoices() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-
-    if (authProvider.authToken != null) {
-      await adminProvider.loadAllInvoices(authProvider.authToken!);
-    }
-  }
+  
 
   List<Map<String, dynamic>> get _filteredInvoices {
     final adminProvider = Provider.of<AdminProvider>(context, listen: false);
@@ -67,23 +54,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
     }
 
     // Filtre par Date Spécifique exacte
-    if (_filterGivenDate != null) {
-      invoices = invoices.where((inv) {
-        final dateStr = inv['created_at']?.toString();
-        if (dateStr == null) return false;
-
-        final parsedDate = DateTime.tryParse(dateStr);
-        if (parsedDate == null) return false;
-
-        // Comparaise par Jour, Mois et Année (ignorer l'heure)
-        return parsedDate.year == _filterGivenDate!.year &&
-            parsedDate.month == _filterGivenDate!.month &&
-            parsedDate.day == _filterGivenDate!.day;
-      }).toList();
-    }
-
-    return invoices;
-  }
+    
 
   String _formatAmount(dynamic value) {
     if (value == null) return '0.000 TND';
@@ -115,12 +86,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
   Future<void> _exportToExcel() async {
     final invoices = _filteredInvoices;
 
-    if (invoices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Aucune facture à exporter')),
-      );
-      return;
-    }
+   
 
     try {
       var excel = Excel.createExcel();
@@ -141,13 +107,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
       for (int i = 0; i < invoices.length; i++) {
         final inv = invoices[i];
         final row = i + 1;
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(inv['id']?.toString() ?? '');
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(inv['invoice_number']?.toString() ?? '');
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(inv['supplier_name']?.toString() ?? '');
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(inv['client_name']?.toString() ?? '');
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue((inv['total_ht'] ?? 0).toString());
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row)).value = TextCellValue((inv['total_ttc'] ?? 0).toString());
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row)).value = TextCellValue((inv['tva_amount'] ?? 0).toString());
+        
         sheet.cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row)).value = TextCellValue(_formatDate(inv['created_at']));
         sheet.cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row)).value = TextCellValue(inv['user_name']?.toString() ?? '');
       }
@@ -166,17 +126,9 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
 
       await Share.shareXFiles([XFile(file.path)], text: 'Export des factures');
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Export Excel réussi'), backgroundColor: Colors.green),
-        );
-      }
+      
 
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur export: $e'), backgroundColor: Colors.red),
-        );
+   
       }
     }
   }
@@ -236,14 +188,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _comptableController.clear();
-                      _filterComptableName = '';
-                      _filterGivenDate = null;
-                    });
+             
                     Navigator.pop(ctx);
                   },
                   child: const Text('Effacer les filtres', style: TextStyle(color: Colors.red)),
@@ -276,18 +221,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final adminProvider = Provider.of<AdminProvider>(context, listen: false);
-              final success = await adminProvider.deleteInvoice(token, invoice['id'].toString());
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(success ? '✅ Facture supprimée' : '❌ Erreur lors de la suppression'),
-                    backgroundColor: success ? Colors.green : Colors.red,
-                  ),
-                );
-                if (success) _loadInvoices();
-              }
-            },
+              
             child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
           ),
         ],
@@ -327,13 +261,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
                       onChanged: (value) => setState(() => _searchQuery = value),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(Icons.filter_alt,
-                        color: (_filterComptableName.isNotEmpty || _filterGivenDate != null) ? Colors.blue : null
-                    ),
-                    onPressed: _showFilterDialog,
-                    tooltip: 'Filtres avancés',
+                  avancés',
                   ),
                   IconButton(
                     icon: const Icon(Icons.file_download),
@@ -348,21 +276,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
                 ],
               ),
 
-              // Indicateurs de filtres actifs
-              if (_filterComptableName.isNotEmpty || _filterGivenDate != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (_filterComptableName.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Chip(
-                            backgroundColor: Colors.blue.withOpacity(0.1),
-                            label: Text('Comptable: $_filterComptableName', style: const TextStyle(fontSize: 12)),
-                            onDeleted: () => setState(() {
-                              _filterComptableName = '';
+             
                               _comptableController.clear();
                             }),
                           ),
@@ -394,15 +308,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
               ],
             ),
           )
-              : ListView.builder(
-            padding: const EdgeInsets.only(bottom: 16),
-            itemCount: invoices.length,
-            itemBuilder: (context, index) {
-              final invoice = invoices[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                elevation: 2,
-                color: isDarkMode ? const Color(0xFF2D2D2D) : Colors.white,
+              
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
                   leading: Container(
@@ -417,16 +323,7 @@ class _AdminInvoicesScreenState extends State<AdminInvoicesScreen> {
                     'Facture ${invoice['invoice_number'] ?? 'N/A'}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Fournisseur: ${invoice['supplier_name'] ?? 'Inconnu'}', style: const TextStyle(fontSize: 12)),
-                      Text('Comptable: ${invoice['user_name'] ?? 'Inconnu'}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)), // Ajout du nom d'utilisateur
-                      Text('Montant: ${_formatAmount(invoice['total_ttc'])}',
-                          style: const TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.w500)),
-                      Text('Date: ${_formatDate(invoice['created_at'])}', style: const TextStyle(fontSize: 11)),
-                    ],
-                  ),
+                 
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
