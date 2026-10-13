@@ -22,22 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadDocuments();
   }
 
-  Future<void> _loadDocuments() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (authProvider.isLoggedIn) {
-      setState(() => _isLoading = true);
-      try {
-        final documentProvider = Provider.of<DocumentProvider>(context, listen: false);
-        await documentProvider.loadDocuments();
-      } catch (e) {
-        print('❌ Erreur chargement documents: $e');
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
-      }
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,27 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               accountEmail: Text(email),
 
               // ✅ C'EST ICI QUE L'IMAGE REMPLACE LA LETTRE
-              currentAccountPicture: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                child: ClipOval(
-                  child: profileImage != null && profileImage.isNotEmpty
-                      ? Image.network(
-                    profileImage,
-                    fit: BoxFit.cover,
-                    width: 80,
-                    height: 80,
-                    // Si l'image échoue à charger, on affiche l'initiale
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Text(
-                          initial,
-                          style: TextStyle(
-                            fontSize: 36,
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
+              
                           ),
                         ),
                       );
@@ -247,30 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Icons.person,
                         label: 'Profil',
                         color: Colors.blue,
-                        route: '/profile',
-                      ),
-                      _buildActionCard(
-                        context,
-                        icon: Icons.chat,
-                        label: 'Chat IA',
-                        color: Colors.purple,
-                        route: '/chat',
-                      ),
-                      _buildActionCard(
-                        context,
-                        icon: Icons.settings,
-                        label: 'Paramètres',
-                        color: Colors.grey,
-                        route: '/settings',
-                      ),
-                      _buildActionCard(
-                        context,
-                        icon: Icons.help,
-                        label: 'Aide',
-                        color: Colors.green,
-                        route: '/help',
-                      ),
-                    ],
+                 
                   ),
                 ],
               ),
@@ -341,25 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Déconnexion'),
-        content: const Text('Voulez-vous vraiment vous déconnecter ?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).logout();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/login',
-                    (route) => false,
-              );
-            },
-            child: const Text(
-              'Déconnecter',
-              style: TextStyle(color: AppTheme.errorColor),
-            ),
+      
           ),
         ],
       ),
