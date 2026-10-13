@@ -88,16 +88,7 @@ class _OCRScannerAppState extends State<OCRScannerApp> {
       );
     }
 
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return Consumer<ThemeProvider>(
-          builder: (context, themeProvider, child) {
-            return MaterialApp(
-              title: 'Neivos Facture',
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: themeProvider.themeMode,
+   
 
               // ✅ Redirection selon le rôle de l'utilisateur
               home: authProvider.isLoggedIn
@@ -135,17 +126,7 @@ class _OCRScannerAppState extends State<OCRScannerApp> {
                 return null;
               },
 
-              onUnknownRoute: (settings) {
-                return MaterialPageRoute(
-                  builder: (_) => Scaffold(
-                    appBar: AppBar(title: const Text('Erreur')),
-                    body: const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error_outline, size: 64, color: Colors.red),
-                          SizedBox(height: 20),
-                          Text('Page non trouvée', style: TextStyle(fontSize: 18)),
+             
                           SizedBox(height: 10),
                           Text('La route demandée n\'existe pas'),
                         ],
