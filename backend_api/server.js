@@ -20,7 +20,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const OCR_API_URL = process.env.OCR_API_URL || 'http://37.60.239.139:8775';
+const OCR_API_URL = process.env.OCR_API_URL || 'http://**.**.***.***:8775';
 
 // ✅ CONFIGURATION NODEMAILER (Pour le mot de passe oublié)
 const transporter = nodemailer.createTransport({
