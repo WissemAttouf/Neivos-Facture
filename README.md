@@ -35,10 +35,6 @@ Les informations extraites doivent être vérifiées avant toute utilisation com
 - Gestion du profil et des paramètres.
 - Accès à l’assistance et à la messagerie.
 
-## Captures d’écran
-
-Les images ci-dessous sont organisées par parcours fonctionnel. Elles sont stockées dans le dossier [`docs/images/`](docs/images/).
-
 ### 1. Authentification et accueil
 
 <p align="center">
@@ -156,3 +152,9 @@ Projet de fin d’études réalisé au sein de **Neivos Groupe**.
 - [LinkedIn](https://www.linkedin.com/in/wissem-attouf-452509226/)
 - [Portfolio](https://wissem-portfolio.vercel.app/)
 - [E-mail](mailto:wattouf35@gmail.com)
+
+---
+
+## Captures d’écran
+
+Les images ci-dessous sont organisées par parcours fonctionnel. Elles sont stockées dans le dossier [`docs/images/`](docs/images/).
