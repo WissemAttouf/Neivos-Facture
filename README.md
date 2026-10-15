@@ -35,65 +35,6 @@ Les informations extraites doivent être vérifiées avant toute utilisation com
 - Gestion du profil et des paramètres.
 - Accès à l’assistance et à la messagerie.
 
-### 1. Authentification et accueil
-
-<p align="center">
-  <img src="docs/images/auth.png" alt="Écran d’authentification de Neivos Facture" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/inscriiit.png" alt="Écran d’inscription de Neivos Facture" width="260">
-</p>
-<p align="center">
-  <img src="docs/images/home.png" alt="Accueil et tableau de bord de Neivos Facture" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/home2.png" alt="Deuxième aperçu de l’accueil de Neivos Facture" width="260">
-</p>
-
-### 2. OCR et extraction des données
-
-Cette section présente les écrans associés à la reconnaissance des factures et à la consultation des données extraites.
-
-<p align="center">
-  <img src="docs/images/ocr.png" alt="Écran OCR de Neivos Facture" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/pdfocr.png" alt="Traitement OCR d’un document PDF" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/extractdonee.png" alt="Résultat d’extraction des données d’une facture" width="260">
-</p>
-<p align="center">
-  <img src="docs/images/extractdonee1.png" alt="Détails complémentaires des données extraites" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/extractdonee2.png" alt="Autre écran de résultat d’extraction" width="260">
-</p>
-
-### 3. Documents et exports
-
-<p align="center">
-  <img src="docs/images/document.png" alt="Espace de gestion des documents" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/excel.png" alt="Export ou aperçu Excel" width="260">
-</p>
-
-### 4. Profil et paramètres
-
-<p align="center">
-  <img src="docs/images/profil.png" alt="Profil utilisateur" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/parametre.png" alt="Paramètres de l’application" width="260">
-</p>
-<p align="center">
-  <img src="docs/images/para2.png" alt="Options supplémentaires des paramètres" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/para3.png" alt="Autre écran des paramètres" width="260">
-</p>
-
-### 5. Assistance
-
-<p align="center">
-  <img src="docs/images/chat.png" alt="Interface de discussion ou de messagerie" width="260">
-  &nbsp;&nbsp;
-  <img src="docs/images/help.png" alt="Écran d’aide et d’assistance" width="260">
-</p>
-
 ## Technologies
 
 | Domaine | Technologies |
@@ -155,6 +96,106 @@ Projet de fin d’études réalisé au sein de **Neivos Groupe**.
 
 ---
 
-## Captures d’écran
+## 📸 Captures d’écran
 
-Les images ci-dessous sont organisées par parcours fonctionnel. Elles sont stockées dans le dossier [`docs/images/`](docs/images/).
+<p align="center">
+  <img src="docs/images/auth.png" alt="Authentification — Neivos-Facture" width="300">
+  <br><strong>Authentification</strong>
+  <br><em>Écran de connexion à Neivos Facture.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/inscriiit.png" alt="Inscription — Neivos-Facture" width="300">
+  <br><strong>Inscription</strong>
+  <br><em>Écran de création d’un compte utilisateur.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/home.png" alt="Accueil — Neivos-Facture" width="300">
+  <br><strong>Accueil</strong>
+  <br><em>Vue d’accueil de l’application.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/home2.png" alt="Accueil — vue complémentaire — Neivos-Facture" width="300">
+  <br><strong>Accueil — vue complémentaire</strong>
+  <br><em>Deuxième aperçu de l’espace d’accueil.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/ocr.png" alt="Traitement OCR — Neivos-Facture" width="300">
+  <br><strong>Traitement OCR</strong>
+  <br><em>Écran consacré au traitement OCR des factures.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/pdfocr.png" alt="OCR de PDF — Neivos-Facture" width="300">
+  <br><strong>OCR de PDF</strong>
+  <br><em>Aperçu du traitement OCR d’un document PDF.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/extractdonee.png" alt="Données extraites — Neivos-Facture" width="300">
+  <br><strong>Données extraites</strong>
+  <br><em>Affichage des données extraites depuis une facture.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/extractdonee1.png" alt="Données extraites — détails — Neivos-Facture" width="300">
+  <br><strong>Données extraites — détails</strong>
+  <br><em>Vue complémentaire des informations extraites.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/extractdonee2.png" alt="Résultats d’extraction — Neivos-Facture" width="300">
+  <br><strong>Résultats d’extraction</strong>
+  <br><em>Autre aperçu des résultats d’extraction.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/document.png" alt="Documents — Neivos-Facture" width="300">
+  <br><strong>Documents</strong>
+  <br><em>Espace de consultation et d’organisation des documents.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/excel.png" alt="Export Excel — Neivos-Facture" width="300">
+  <br><strong>Export Excel</strong>
+  <br><em>Aperçu associé à l’export ou au document Excel.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/profil.png" alt="Profil utilisateur — Neivos-Facture" width="300">
+  <br><strong>Profil utilisateur</strong>
+  <br><em>Écran du profil utilisateur.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/parametre.png" alt="Paramètres — Neivos-Facture" width="300">
+  <br><strong>Paramètres</strong>
+  <br><em>Écran des paramètres de l’application.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/para2.png" alt="Options de configuration — Neivos-Facture" width="300">
+  <br><strong>Options de configuration</strong>
+  <br><em>Vue complémentaire des options de configuration.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/para3.png" alt="Paramètres — vue complémentaire — Neivos-Facture" width="300">
+  <br><strong>Paramètres — vue complémentaire</strong>
+  <br><em>Autre aperçu des paramètres disponibles.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/chat.png" alt="Assistance par discussion — Neivos-Facture" width="300">
+  <br><strong>Assistance par discussion</strong>
+  <br><em>Interface de discussion ou de messagerie.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/help.png" alt="Aide — Neivos-Facture" width="300">
+  <br><strong>Aide</strong>
+  <br><em>Écran d’aide et d’assistance.</em>
+</p>
