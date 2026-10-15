@@ -1,22 +1,102 @@
 # Neivos Facture — Application mobile de traitement de factures
 
-Application mobile développée avec **Flutter et Dart**, connectée à un backend **Node.js/Express** et à une base de données relationnelle. Le projet de fin d’études explore un workflow de traitement de factures assisté par reconnaissance optique de caractères (OCR).
+**Neivos Facture** est une application mobile développée avec **Flutter et Dart**, connectée à un backend **Node.js / Express.js** et à une base de données relationnelle. Le projet de fin d’études explore un workflow de traitement de factures assisté par reconnaissance optique de caractères (**OCR**).
+
+## Sommaire
+
+- [Présentation](#présentation)
+- [Fonctionnalités](#fonctionnalités)
+- [Captures d’écran](#captures-décran)
+  - [Authentification et accueil](#1-authentification-et-accueil)
+  - [OCR et extraction des données](#2-ocr-et-extraction-des-données)
+  - [Documents et exports](#3-documents-et-exports)
+  - [Profil et paramètres](#4-profil-et-paramètres)
+  - [Assistance](#5-assistance)
+- [Technologies](#technologies)
+- [Architecture générale](#architecture-générale)
+- [Installation et configuration](#installation-et-configuration)
+- [Auteur](#auteur)
 
 ## Présentation
 
-Neivos Facture vise à faciliter la numérisation, l’extraction et l’organisation des informations contenues dans des factures. Le workflow combine l’interface mobile, l’intégration d’une API REST et un service de traitement OCR. Les résultats extraits doivent pouvoir être contrôlés avant d’être utilisés.
+Neivos Facture vise à faciliter la numérisation, l’extraction et l’organisation des informations contenues dans des factures. L’application mobile communique avec une API REST et s’appuie sur un workflow OCR pour aider à récupérer les informations présentes dans les documents.
 
-## Fonctionnalités du parcours applicatif
+Les informations extraites doivent être vérifiées avant toute utilisation comptable. La qualité du résultat dépend notamment de la lisibilité de la facture et de la disponibilité du service OCR configuré.
 
-- Tableau de bord mobile donnant accès aux principales sections.
-- Sélection d’une image depuis la galerie ou capture d’une facture.
-- Transmission des documents au workflow de traitement OCR configuré.
-- Extraction assistée des données de facture et présentation pour vérification.
-- Gestion des enregistrements de factures via le backend.
-- Intégration mobile avec une API REST.
-- Fonctionnalités liées au profil, aux paramètres et à l’assistance selon les écrans du projet.
+## Fonctionnalités
 
-Le résultat de l’OCR dépend de la qualité de l’image et de la disponibilité du service de reconnaissance configuré. Vérifiez les données extraites avant toute utilisation comptable.
+- Création de compte et authentification.
+- Tableau de bord et navigation entre les fonctionnalités.
+- Sélection ou traitement d’images de factures.
+- Reconnaissance optique de caractères (OCR) et extraction assistée des données.
+- Consultation et organisation des documents.
+- Présentation des résultats d’extraction pour vérification.
+- Export ou génération de documents PDF et Excel, selon les fonctionnalités implémentées.
+- Gestion du profil et des paramètres.
+- Accès à l’assistance et à la messagerie.
+
+## Captures d’écran
+
+Les images ci-dessous sont organisées par parcours fonctionnel. Elles sont stockées dans le dossier [`docs/images/`](docs/images/).
+
+### 1. Authentification et accueil
+
+<p align="center">
+  <img src="docs/images/auth.png" alt="Écran d’authentification de Neivos Facture" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/inscriiit.png" alt="Écran d’inscription de Neivos Facture" width="260">
+</p>
+<p align="center">
+  <img src="docs/images/home.png" alt="Accueil et tableau de bord de Neivos Facture" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/home2.png" alt="Deuxième aperçu de l’accueil de Neivos Facture" width="260">
+</p>
+
+### 2. OCR et extraction des données
+
+Cette section présente les écrans associés à la reconnaissance des factures et à la consultation des données extraites.
+
+<p align="center">
+  <img src="docs/images/ocr.png" alt="Écran OCR de Neivos Facture" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/pdfocr.png" alt="Traitement OCR d’un document PDF" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/extractdonee.png" alt="Résultat d’extraction des données d’une facture" width="260">
+</p>
+<p align="center">
+  <img src="docs/images/extractdonee1.png" alt="Détails complémentaires des données extraites" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/extractdonee2.png" alt="Autre écran de résultat d’extraction" width="260">
+</p>
+
+### 3. Documents et exports
+
+<p align="center">
+  <img src="docs/images/document.png" alt="Espace de gestion des documents" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/excel.png" alt="Export ou aperçu Excel" width="260">
+</p>
+
+### 4. Profil et paramètres
+
+<p align="center">
+  <img src="docs/images/profil.png" alt="Profil utilisateur" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/parametre.png" alt="Paramètres de l’application" width="260">
+</p>
+<p align="center">
+  <img src="docs/images/para2.png" alt="Options supplémentaires des paramètres" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/para3.png" alt="Autre écran des paramètres" width="260">
+</p>
+
+### 5. Assistance
+
+<p align="center">
+  <img src="docs/images/chat.png" alt="Interface de discussion ou de messagerie" width="260">
+  &nbsp;&nbsp;
+  <img src="docs/images/help.png" alt="Écran d’aide et d’assistance" width="260">
+</p>
 
 ## Technologies
 
@@ -24,27 +104,27 @@ Le résultat de l’OCR dépend de la qualité de l’image et de la disponibili
 |---|---|
 | Application mobile | Flutter, Dart |
 | Backend | Node.js, Express.js |
-| Données | MySQL / base relationnelle selon la configuration |
+| Base de données | MySQL / base relationnelle selon la configuration |
 | Communication | API REST |
 | Traitement documentaire | OCR |
-| Documents | Génération ou export de rapports selon l’implémentation du projet |
+| Exports | PDF, Excel, selon l’implémentation du projet |
 
 ## Architecture générale
 
 ```text
 Neivos-Facture/
-├── application Flutter/      # Interface mobile
-├── backend/                  # API et logique serveur, selon l’organisation du dépôt
+├── application Flutter/   # Interface mobile
+├── backend/               # API et logique serveur
 ├── docs/
-│   └── screenshots/          # Captures d’écran documentées
+│   └── images/            # Captures d’écran présentées dans ce README
 └── README.md
 ```
 
-Consultez l’arborescence réelle du dépôt pour repérer les dossiers et fichiers d’entrée de chaque composant.
+Cette représentation est indicative : consultez l’arborescence du dépôt pour connaître les chemins exacts des composants.
 
 ## Installation et configuration
 
-Les étapes exactes dépendent des versions des SDK et des services configurés dans le dépôt.
+Les commandes suivantes sont à adapter aux dossiers et scripts réellement présents dans le dépôt.
 
 ### Application Flutter
 
@@ -55,22 +135,24 @@ flutter run
 
 ### Backend Node.js
 
-Si le backend possède son propre fichier `package.json`, ouvrez son dossier, installez les dépendances et lancez le script défini dans ce fichier :
+Depuis le dossier du backend qui contient le fichier `package.json` :
 
 ```bash
 npm install
 npm run
 ```
 
-Configurez les paramètres de base de données et les URL des services dans les fichiers d’environnement prévus. Ne publiez jamais de secrets, mots de passe ou clés d’API.
+La commande `npm run` affiche les scripts disponibles. Lancez ensuite le script de démarrage défini dans le projet.
 
-## Captures d’écran
-
-Les captures documentées dans `docs/screenshots/` peuvent être consultées directement dans le dépôt GitHub.
+Configurez les paramètres de base de données et les URL des services dans les fichiers d’environnement prévus. **Ne publiez jamais de mots de passe, clés d’API ou autres secrets.**
 
 ## Auteur
 
-**Wissem Attouf** — Ingénieur logiciel | Développeur Full Stack  
-Projet de fin d’études réalisé au sein de Neivos Groupe.
+**Wissem Attouf** — Software Engineer | Full-Stack Developer
 
-[GitHub](https://github.com/WissemAttouf) · [LinkedIn](https://www.linkedin.com/in/wissem-attouf-452509226/) · [Portfolio](https://wissem-portfolio.vercel.app/) · [E-mail](mailto:wattouf35@gmail.com)
+Projet de fin d’études réalisé au sein de **Neivos Groupe**.
+
+- [GitHub](https://github.com/WissemAttouf)
+- [LinkedIn](https://www.linkedin.com/in/wissem-attouf-452509226/)
+- [Portfolio](https://wissem-portfolio.vercel.app/)
+- [E-mail](mailto:wattouf35@gmail.com)
