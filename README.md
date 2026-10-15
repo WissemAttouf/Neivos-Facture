@@ -83,18 +83,6 @@ La commande `npm run` affiche les scripts disponibles. Lancez ensuite le script 
 
 Configurez les paramètres de base de données et les URL des services dans les fichiers d’environnement prévus. **Ne publiez jamais de mots de passe, clés d’API ou autres secrets.**
 
-## Auteur
-
-**Wissem Attouf** — Software Engineer | Full-Stack Developer
-
-Projet de fin d’études réalisé au sein de **Neivos Groupe**.
-
-- [GitHub](https://github.com/WissemAttouf)
-- [LinkedIn](https://www.linkedin.com/in/wissem-attouf-452509226/)
-- [Portfolio](https://wissem-portfolio.vercel.app/)
-- [E-mail](mailto:wattouf35@gmail.com)
-
----
 
 ## 📸 Captures d’écran
 
@@ -199,3 +187,18 @@ Projet de fin d’études réalisé au sein de **Neivos Groupe**.
   <br><strong>Aide</strong>
   <br><em>Écran d’aide et d’assistance.</em>
 </p>
+
+---
+
+## Auteur
+
+**Wissem Attouf** — Software Engineer | Full-Stack Developer
+
+Projet de fin d’études réalisé au sein de **Neivos Groupe**.
+
+- [GitHub](https://github.com/WissemAttouf)
+- [LinkedIn](https://www.linkedin.com/in/wissem-attouf-452509226/)
+- [Portfolio](https://wissem-portfolio.vercel.app/)
+- [E-mail](mailto:wattouf35@gmail.com)
+
+---
