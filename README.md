@@ -1,6 +1,8 @@
 # 💻 Neivos Facture — Application mobile de traitement de factures
 
-**Neivos Facture** est une application mobile développée avec **Flutter et Dart**, connectée à un backend **Node.js / Express.js** et à une base de données relationnelle. Le projet de fin d’études explore un workflow de traitement de factures assisté par reconnaissance optique de caractères (**OCR**).
+**Neivos Facture** est une application mobile de traitement de factures développée avec **Flutter et Dart**, connectée à un backend **Node.js / Express.js** et à une base de données relationnelle (MySQL selon la configuration). Réalisé dans le cadre de mon projet de fin d’études chez **Neivos Groupe**, le projet utilise un workflow de reconnaissance optique de caractères (**OCR**) pour aider à extraire les informations des documents.
+
+> **Résumé pour recruteurs :** contribution au développement d’une solution mobile et backend, à l’intégration avec une API REST et à la gestion des données. Les résultats OCR doivent être vérifiés par l’utilisateur. Les fonctionnalités détaillées ci-dessous sont à considérer selon leur implémentation effective dans le dépôt.
 
 ## 🧭 Sommaire
 
